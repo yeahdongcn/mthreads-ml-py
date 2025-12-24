@@ -426,6 +426,7 @@ def mtmlLibraryInitDeviceByIndex(index):
     _mtmlCheckReturn(ret)
     return c_device
 
+@convertStrBytes
 def mtmlLibraryInitDeviceByUuid(uuid):
     global libHandle
     c_uuid = c_char_p(uuid)
@@ -435,6 +436,7 @@ def mtmlLibraryInitDeviceByUuid(uuid):
     _mtmlCheckReturn(ret)
     return c_device
 
+@convertStrBytes
 def mtmlLibraryInitDeviceByPciSbdf(pciSbdf):
     global libHandle
     c_pciSbdf = c_char_p(pciSbdf)
@@ -484,6 +486,7 @@ def mtmlDeviceGetIndex(device):
     _mtmlCheckReturn(ret)
     return c_index.value
 
+@convertStrBytes
 def mtmlDeviceGetName(device):
     global libHandle
     c_name = create_string_buffer(MTML_DEVICE_NAME_BUFFER_SIZE)
@@ -654,7 +657,6 @@ def mtmlSystemGetDriverVersion(system):
 
 # nvml wrapper layer ###########################################################
 # NVML constants and types###########################################
-NVML_ERROR_INSUFFICIENT_SIZE = MTML_ERROR_INSUFFICIENT_SIZE
 NVML_SUCCESS = MTML_SUCCESS
 NVML_ERROR_NOT_SUPPORTED = MTML_ERROR_NOT_SUPPORTED
 NVML_ERROR_UNINITIALIZED = MTML_ERROR_UNINITIALIZED
