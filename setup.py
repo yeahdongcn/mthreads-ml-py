@@ -17,13 +17,13 @@ try:
     # Code is from https://packaging.python.org/en/latest/guides/making-a-pypi-friendly-readme/
     from pathlib import Path
     this_dir = Path(__file__).parent
-    long_description = (this_dir / 'README.txt').read_text()
+    long_description = (this_dir / 'README.md').read_text()
 except ImportError:
     # If pathlib can not find the readme, try reading it from the current dir.
     # This should always work if the readme is in the parent directory.
-    # This will also work with pytho2.
+    # This will also work with python2.
     try:
-        with open('README.txt', 'r') as readme:
+        with open('README.md', 'r') as readme:
             long_description = readme.read()
     except IOError:
         # The python2 error for files that don't exist.
@@ -36,13 +36,13 @@ except ImportError:
 finally:
     # Exit if there is no long description.
     if long_description is None:
-        print('Unable to load README.txt as long description.')
+        print('Unable to load README.md as long description.')
         print('Make sure it is in the correct directory.')
         exit(1)
 
 
 setup(name=_package_name,
-      version='2.2.1',
+      version='2.2.2',
       description='Python Bindings for the Moore Threads GPU Management Library',
       long_description=long_description,
       long_description_content_type='text/markdown',

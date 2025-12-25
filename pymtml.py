@@ -17,24 +17,173 @@ if _TYPE_CHECKING:
 
 ## C Type mappings ##
 ## Constants
-MTML_DEVICE_UUID_BUFFER_SIZE = 48
-MTML_SYSTEM_DRIVER_VERSION_BUFFER_SIZE = 80
+MTML_LIBRARY_VERSION_BUFFER_SIZE = 32
+MTML_DRIVER_VERSION_BUFFER_SIZE = 80
 MTML_DEVICE_NAME_BUFFER_SIZE = 32
-MTML_DEVICE_SERIAL_NUMBER_BUFFER_SIZE = 64
+MTML_DEVICE_UUID_BUFFER_SIZE = 48
+MTML_DEVICE_MTBIOS_VERSION_BUFFER_SIZE = 64
+MTML_DEVICE_VBIOS_VERSION_BUFFER_SIZE = MTML_DEVICE_MTBIOS_VERSION_BUFFER_SIZE
+MTML_DEVICE_PATH_BUFFER_SIZE = 64
 MTML_DEVICE_PCI_SBDF_BUFFER_SIZE = 32
+MTML_VIRT_TYPE_ID_BUFFER_SIZE = 16
+MTML_VIRT_TYPE_CLASS_BUFFER_SIZE = 32
+MTML_VIRT_TYPE_NAME_BUFFER_SIZE = 32
+MTML_VIRT_TYPE_API_BUFFER_SIZE = 16
+MTML_LOG_FILE_PATH_BUFFER_SIZE = 200
+MTML_MPC_PROFILE_NAME_BUFFER_SIZE = 32
+MTML_MPC_CONF_NAME_BUFFER_SIZE = 32
+MTML_MPC_CONF_MAX_PROF_NUM = 16
+MTML_DEVICE_SLOT_NAME_BUFFER_SIZE = 32
+MTML_MEMORY_VENDOR_BUFFER_SIZE = 64
+MTML_DEVICE_SERIAL_NUMBER_BUFFER_SIZE = 64
+MTML_SYSTEM_DRIVER_VERSION_BUFFER_SIZE = 80
 MTML_DEVICE_PCI_BUS_ID_BUFFER_SIZE = 32
+
 ## Enums
 _mtmlReturn_t = c_uint
 MTML_SUCCESS = 0
+MTML_ERROR_DRIVER_NOT_LOADED = 1
+MTML_ERROR_DRIVER_FAILURE = 2
+MTML_ERROR_INVALID_ARGUMENT = 3
 MTML_ERROR_NOT_SUPPORTED = 4
+MTML_ERROR_NO_PERMISSION = 5
+MTML_ERROR_INSUFFICIENT_SIZE = 6
+MTML_ERROR_NOT_FOUND = 7
+MTML_ERROR_INSUFFICIENT_MEMORY = 8
+MTML_ERROR_DRIVER_TOO_OLD = 9
+MTML_ERROR_DRIVER_TOO_NEW = 10
+MTML_ERROR_TIMEOUT = 11
+MTML_ERROR_RESOURCE_IS_BUSY = 12
+MTML_ERROR_UNKNOWN = 999
+# Additional error codes for compatibility
 MTML_ERROR_UNINITIALIZED = 666
 MTML_ERROR_FUNCTION_NOT_FOUND = 667
-MTML_ERROR_INSUFFICIENT_SIZE = 668
 MTML_ERROR_GPU_IS_LOST = 669
 MTML_ERROR_LIBRARY_NOT_FOUND = 670
-MTML_ERROR_NO_PERMISSION = 671
-MTML_ERROR_NOT_FOUND = 672
-MTML_ERROR_UNKNOWN = 999
+
+_mtmlBrandType_t = c_uint
+MTML_BRAND_MTT = 0
+MTML_BRAND_UNKNOWN = 1
+MTML_BRAND_COUNT = 2
+
+_mtmlMemoryType_t = c_uint
+MTML_MEM_TYPE_LPDDR4 = 0
+MTML_MEM_TYPE_GDDR6 = 1
+
+_mtmlCodecType_t = c_uint
+MTML_CODEC_TYPE_AVC = 0
+MTML_CODEC_TYPE_VC1 = 1
+MTML_CODEC_TYPE_MPEG2 = 2
+MTML_CODEC_TYPE_MPEG4 = 3
+MTML_CODEC_TYPE_H263 = 4
+MTML_CODEC_TYPE_DIV3 = 5
+MTML_CODEC_TYPE_RV = 6
+MTML_CODEC_TYPE_AVS = 7
+MTML_CODEC_TYPE_RSVD1 = 8
+MTML_CODEC_TYPE_THO = 9
+MTML_CODEC_TYPE_VP3 = 10
+MTML_CODEC_TYPE_VP8 = 11
+MTML_CODEC_TYPE_HEVC = 12
+MTML_CODEC_TYPE_VP9 = 13
+MTML_CODEC_TYPE_AVS2 = 14
+MTML_CODEC_TYPE_RSVD2 = 15
+MTML_CODEC_TYPE_AV1 = 16
+MTML_CODEC_TYPE_COUNT = 17
+
+_mtmlCodecSessionState_t = c_uint
+MTML_CODEC_SESSION_STATE_UNKNOWN = -1
+MTML_CODEC_SESSION_STATE_IDLE = 0
+MTML_CODEC_SESSION_STATE_ACTIVE = 1
+MTML_CODEC_SESSION_STATE_COUNT = 2
+
+_mtmlVirtCapability_t = c_uint
+MTML_DEVICE_NOT_SUPPORT_VIRTUALIZATION = 0
+MTML_DEVICE_SUPPORT_VIRTUALIZATION = 1
+
+_mtmlVirtRole_t = c_uint
+MTML_VIRT_ROLE_NONE = 0
+MTML_VIRT_ROLE_HOST_VIRTDEVICE = 1
+MTML_VIRT_ROLE_GUEST_VIRTDEVICE = 2
+MTML_VIRT_ROLE_COUNT = 3
+
+_mtmlDeviceTopologyLevel_t = c_uint
+MTML_TOPOLOGY_INTERNAL = 0
+MTML_TOPOLOGY_SINGLE = 1
+MTML_TOPOLOGY_MULTIPLE = 2
+MTML_TOPOLOGY_HOSTBRIDGE = 3
+MTML_TOPOLOGY_NODE = 4
+MTML_TOPOLOGY_SYSTEM = 5
+
+_mtmlLogLevel_t = c_uint
+MTML_LOG_LEVEL_OFF = 0
+MTML_LOG_LEVEL_FATAL = 1
+MTML_LOG_LEVEL_ERROR = 2
+MTML_LOG_LEVEL_WARNING = 3
+MTML_LOG_LEVEL_INFO = 4
+
+_mtmlMpcMode_t = c_uint
+MTML_DEVICE_MPC_DISABLE = 0
+MTML_DEVICE_MPC_ENABLE = 1
+
+_mtmlMpcCapability_t = c_uint
+MTML_DEVICE_NOT_SUPPORT_MPC = 0
+MTML_DEVICE_SUPPORT_MPC = 1
+
+_mtmlMpcType_t = c_uint
+MTML_MPC_TYPE_NONE = 0
+MTML_MPC_TYPE_PARENT = 1
+MTML_MPC_TYPE_INSTANCE = 2
+
+_mtmlDeviceP2PStatus_t = c_uint
+MTML_P2P_STATUS_OK = 0
+MTML_P2P_STATUS_CHIPSET_NOT_SUPPORTED = 1
+MTML_P2P_STATUS_GPU_NOT_SUPPORTED = 2
+MTML_P2P_STATUS_UNKNOWN = 3
+
+_mtmlDeviceP2PCaps_t = c_uint
+MTML_P2P_CAPS_READ = 0
+MTML_P2P_CAPS_WRITE = 1
+
+_mtmlGpuEngine_t = c_uint
+MTML_GPU_ENGINE_GEOMETRY = 0
+MTML_GPU_ENGINE_2D = 1
+MTML_GPU_ENGINE_3D = 2
+MTML_GPU_ENGINE_COMPUTE = 3
+MTML_GPU_ENGINE_MAX = 4
+
+_mtmlEccMode_t = c_uint
+MTML_MEMORY_ECC_DISABLE = 0
+MTML_MEMORY_ECC_ENABLE = 1
+
+_mtmlPageRetirementCause_t = c_uint
+MTML_PAGE_RETIREMENT_CAUSE_MULTIPLE_SINGLE_BIT_ECC_ERRORS = 0
+MTML_PAGE_RETIREMENT_CAUSE_DOUBLE_BIT_ECC_ERROR = 1
+MTML_PAGE_RETIREMENT_CAUSE_MAX = 2
+
+_mtmlRetiredPagesPendingState_t = c_uint
+MTML_RETIRED_PAGES_PENDING_STATE_FALSE = 0
+MTML_RETIRED_PAGES_PENDING_STATE_TRUE = 1
+
+_mtmlEccCounterType_t = c_uint
+MTML_VOLATILE_ECC = 0
+MTML_AGGREGATE_ECC = 1
+MTML_ECC_COUNTER_TYPE_COUNT = 2
+
+_mtmlMemoryErrorType_t = c_uint
+MTML_MEMORY_ERROR_TYPE_CORRECTED = 0
+MTML_MEMORY_ERROR_TYPE_UNCORRECTED = 1
+MTML_MEMORY_ERROR_TYPE_COUNT = 2
+
+_mtmlMemoryLocation_t = c_uint
+MTML_MEMORY_LOCATION_DRAM = 0x1
+
+_mtmlDispIntfType_t = c_uint
+MTML_DISP_INTF_TYPE_DP = 0
+MTML_DISP_INTF_TYPE_EDP = 1
+MTML_DISP_INTF_TYPE_VGA = 2
+MTML_DISP_INTF_TYPE_HDMI = 3
+MTML_DISP_INTF_TYPE_LVDS = 4
+MTML_DISP_INTF_TYPE_MAX = 5
 
 _mtmlMtLinkState_t = c_uint
 MTML_MTLINK_STATE_DOWN = 0
@@ -185,6 +334,129 @@ class c_mtmlPciInfo_t(_PrintableStructure):
         ("pciCurGen", c_uint),
         ("busId", c_char * MTML_DEVICE_PCI_BUS_ID_BUFFER_SIZE),
         ("rsvd", c_uint * 6)
+    ]
+
+## Device property structure
+class c_mtmlDeviceProperty_t(_PrintableStructure):
+    _fields_ = [
+        ("virtCapability", c_uint),
+        ("virtRole", c_uint),
+        ("mpcCapability", c_uint),
+        ("mpcType", c_uint),
+        ("rsvd", c_uint * 12),
+    ]
+
+## PCI slot info structure
+class c_mtmlPciSlotInfo_t(_PrintableStructure):
+    _fields_ = [
+        ("slotType", c_uint),
+        ("slotName", c_char * MTML_DEVICE_SLOT_NAME_BUFFER_SIZE),
+        ("rsvd", c_uint * 4),
+    ]
+
+## Display interface spec structure
+class c_mtmlDispIntfSpec_t(_PrintableStructure):
+    _fields_ = [
+        ("type", c_uint),
+        ("maxResWidth", c_uint),
+        ("maxResHeight", c_uint),
+        ("rsvd", c_uint * 4),
+    ]
+
+## Virtualization type structure
+class c_mtmlVirtType_t(_PrintableStructure):
+    _fields_ = [
+        ("id", c_char * MTML_VIRT_TYPE_ID_BUFFER_SIZE),
+        ("deviceClass", c_char * MTML_VIRT_TYPE_CLASS_BUFFER_SIZE),
+        ("name", c_char * MTML_VIRT_TYPE_NAME_BUFFER_SIZE),
+        ("maxInstances", c_uint),
+        ("memSize", c_ulonglong),
+        ("gpuCores", c_uint),
+        ("maxResWidth", c_uint),
+        ("maxResHeight", c_uint),
+        ("apiType", c_char * MTML_VIRT_TYPE_API_BUFFER_SIZE),
+        ("encoderNum", c_uint),
+        ("decoderNum", c_uint),
+        ("rsvd", c_uint * 4),
+    ]
+
+## Codec utilization structure
+class c_mtmlCodecUtil_t(_PrintableStructure):
+    _fields_ = [
+        ("encodeUtil", c_uint),
+        ("decodeUtil", c_uint),
+        ("rsvd", c_uint * 4),
+    ]
+
+## Codec session state structure
+class c_mtmlCodecSessionState_t(_PrintableStructure):
+    _fields_ = [
+        ("sessionId", c_uint),
+        ("state", c_uint),
+        ("rsvd", c_uint * 4),
+    ]
+
+## Codec session metrics structure
+class c_mtmlCodecSessionMetrics_t(_PrintableStructure):
+    _fields_ = [
+        ("width", c_uint),
+        ("height", c_uint),
+        ("codecType", c_uint),
+        ("fps", c_uint),
+        ("rsvd", c_uint * 4),
+    ]
+
+## Log configuration structure
+class c_mtmlLogConfiguration_t(_PrintableStructure):
+    _fields_ = [
+        ("filePath", c_char * MTML_LOG_FILE_PATH_BUFFER_SIZE),
+        ("maxSize", c_uint),
+        ("logLevel", c_uint),
+        ("rsvd", c_uint * 4),
+    ]
+
+## MPC profile structure
+class c_mtmlMpcProfile_t(_PrintableStructure):
+    _fields_ = [
+        ("profileId", c_uint),
+        ("name", c_char * MTML_MPC_PROFILE_NAME_BUFFER_SIZE),
+        ("memSize", c_ulonglong),
+        ("gpuCores", c_uint),
+        ("rsvd", c_uint * 4),
+    ]
+
+## MPC configuration structure
+class c_mtmlMpcConfiguration_t(_PrintableStructure):
+    _fields_ = [
+        ("id", c_uint),
+        ("name", c_char * MTML_MPC_CONF_NAME_BUFFER_SIZE),
+        ("profileNum", c_uint),
+        ("profileIds", c_uint * MTML_MPC_CONF_MAX_PROF_NUM),
+        ("rsvd", c_uint * 4),
+    ]
+
+## MtLink layout structure
+class c_mtmlMtLinkLayout_t(_PrintableStructure):
+    _fields_ = [
+        ("localLinkId", c_uint),
+        ("remoteLinkId", c_uint),
+        ("rsvd", c_uint * 4),
+    ]
+
+## Page retirement count structure
+class c_mtmlPageRetirementCount_t(_PrintableStructure):
+    _fields_ = [
+        ("singleBitEcc", c_uint),
+        ("doubleBitEcc", c_uint),
+        ("rsvd", c_uint * 4),
+    ]
+
+## Page retirement structure
+class c_mtmlPageRetirement_t(_PrintableStructure):
+    _fields_ = [
+        ("address", c_ulonglong),
+        ("timestamp", c_ulonglong),
+        ("rsvd", c_uint * 4),
     ]
 
 
@@ -655,6 +927,617 @@ def mtmlSystemGetDriverVersion(system):
     _mtmlCheckReturn(ret)
     return c_version.value
 
+@convertStrBytes
+def mtmlLibraryGetVersion():
+    global libHandle
+    c_version = create_string_buffer(MTML_LIBRARY_VERSION_BUFFER_SIZE)
+    fn = _mtmlGetFunctionPointer("mtmlLibraryGetVersion")
+    ret = fn(libHandle, c_version, c_uint(MTML_LIBRARY_VERSION_BUFFER_SIZE))
+    _mtmlCheckReturn(ret)
+    return c_version.value
+
+def mtmlLibraryFreeSystem(system):
+    fn = _mtmlGetFunctionPointer("mtmlLibraryFreeSystem")
+    ret = fn(system)
+    _mtmlCheckReturn(ret)
+    return None
+
+def mtmlLibraryFreeDevice(device):
+    fn = _mtmlGetFunctionPointer("mtmlLibraryFreeDevice")
+    ret = fn(device)
+    _mtmlCheckReturn(ret)
+    return None
+
+def mtmlDeviceFreeGpu(gpu):
+    fn = _mtmlGetFunctionPointer("mtmlDeviceFreeGpu")
+    ret = fn(gpu)
+    _mtmlCheckReturn(ret)
+    return None
+
+def mtmlDeviceFreeMemory(memory):
+    fn = _mtmlGetFunctionPointer("mtmlDeviceFreeMemory")
+    ret = fn(memory)
+    _mtmlCheckReturn(ret)
+    return None
+
+def mtmlDeviceFreeVpu(vpu):
+    fn = _mtmlGetFunctionPointer("mtmlDeviceFreeVpu")
+    ret = fn(vpu)
+    _mtmlCheckReturn(ret)
+    return None
+
+def mtmlDeviceGetBrand(device):
+    c_brand = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetBrand")
+    ret = fn(device, byref(c_brand))
+    _mtmlCheckReturn(ret)
+    return c_brand.value
+
+@convertStrBytes
+def mtmlDeviceGetGpuPath(device):
+    c_path = create_string_buffer(MTML_DEVICE_PATH_BUFFER_SIZE)
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetGpuPath")
+    ret = fn(device, c_path, c_uint(MTML_DEVICE_PATH_BUFFER_SIZE))
+    _mtmlCheckReturn(ret)
+    return c_path.value
+
+@convertStrBytes
+def mtmlDeviceGetPrimaryPath(device):
+    c_path = create_string_buffer(MTML_DEVICE_PATH_BUFFER_SIZE)
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetPrimaryPath")
+    ret = fn(device, c_path, c_uint(MTML_DEVICE_PATH_BUFFER_SIZE))
+    _mtmlCheckReturn(ret)
+    return c_path.value
+
+@convertStrBytes
+def mtmlDeviceGetRenderPath(device):
+    c_path = create_string_buffer(MTML_DEVICE_PATH_BUFFER_SIZE)
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetRenderPath")
+    ret = fn(device, c_path, c_uint(MTML_DEVICE_PATH_BUFFER_SIZE))
+    _mtmlCheckReturn(ret)
+    return c_path.value
+
+@convertStrBytes
+def mtmlDeviceGetVbiosVersion(device):
+    c_version = create_string_buffer(MTML_DEVICE_VBIOS_VERSION_BUFFER_SIZE)
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetVbiosVersion")
+    ret = fn(device, c_version, c_uint(MTML_DEVICE_VBIOS_VERSION_BUFFER_SIZE))
+    _mtmlCheckReturn(ret)
+    return c_version.value
+
+@convertStrBytes
+def mtmlDeviceGetMtBiosVersion(device):
+    c_version = create_string_buffer(MTML_DEVICE_MTBIOS_VERSION_BUFFER_SIZE)
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMtBiosVersion")
+    ret = fn(device, c_version, c_uint(MTML_DEVICE_MTBIOS_VERSION_BUFFER_SIZE))
+    _mtmlCheckReturn(ret)
+    return c_version.value
+
+def mtmlDeviceGetProperty(device):
+    c_prop = c_mtmlDeviceProperty_t()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetProperty")
+    ret = fn(device, byref(c_prop))
+    _mtmlCheckReturn(ret)
+    return c_prop
+
+def mtmlDeviceCountFan(device):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountFan")
+    ret = fn(device, byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+def mtmlDeviceGetFanSpeed(device, index):
+    c_speed = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetFanSpeed")
+    ret = fn(device, c_uint(index), byref(c_speed))
+    _mtmlCheckReturn(ret)
+    return c_speed.value
+
+def mtmlDeviceGetFanRpm(device, fanIndex):
+    c_rpm = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetFanRpm")
+    ret = fn(device, c_uint(fanIndex), byref(c_rpm))
+    _mtmlCheckReturn(ret)
+    return c_rpm.value
+
+def mtmlDeviceGetPcieSlotInfo(device):
+    c_slotInfo = c_mtmlPciSlotInfo_t()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetPcieSlotInfo")
+    ret = fn(device, byref(c_slotInfo))
+    _mtmlCheckReturn(ret)
+    return c_slotInfo
+
+def mtmlDeviceCountDisplayInterface(device):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountDisplayInterface")
+    ret = fn(device, byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+def mtmlDeviceGetDisplayInterfaceSpec(device, intfIndex):
+    c_spec = c_mtmlDispIntfSpec_t()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetDisplayInterfaceSpec")
+    ret = fn(device, c_uint(intfIndex), byref(c_spec))
+    _mtmlCheckReturn(ret)
+    return c_spec
+
+def mtmlDeviceCountGpuCores(device):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountGpuCores")
+    ret = fn(device, byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+## Virtualization APIs
+def mtmlDeviceCountSupportedVirtTypes(device):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountSupportedVirtTypes")
+    ret = fn(device, byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+def mtmlDeviceGetSupportedVirtTypes(device, count):
+    c_types = (c_mtmlVirtType_t * count)()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetSupportedVirtTypes")
+    ret = fn(device, c_types, c_uint(count))
+    _mtmlCheckReturn(ret)
+    return list(c_types)
+
+def mtmlDeviceCountAvailVirtTypes(device):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountAvailVirtTypes")
+    ret = fn(device, byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+def mtmlDeviceGetAvailVirtTypes(device, count):
+    c_types = (c_mtmlVirtType_t * count)()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetAvailVirtTypes")
+    ret = fn(device, c_types, c_uint(count))
+    _mtmlCheckReturn(ret)
+    return list(c_types)
+
+def mtmlDeviceCountAvailVirtDevices(device, virtType):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountAvailVirtDevices")
+    ret = fn(device, byref(virtType), byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+def mtmlDeviceCountActiveVirtDevices(device):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountActiveVirtDevices")
+    ret = fn(device, byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+def mtmlDeviceGetActiveVirtDeviceUuids(device, entryLength, entryCount):
+    c_uuids = create_string_buffer(entryLength * entryCount)
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetActiveVirtDeviceUuids")
+    ret = fn(device, c_uuids, c_uint(entryLength), c_uint(entryCount))
+    _mtmlCheckReturn(ret)
+    # Parse the buffer into a list of UUIDs
+    uuids = []
+    for i in range(entryCount):
+        uuid = c_uuids[i * entryLength:(i + 1) * entryLength].decode().rstrip('\x00')
+        if uuid:
+            uuids.append(uuid)
+    return uuids
+
+def mtmlDeviceCountMaxVirtDevices(device, virtType):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountMaxVirtDevices")
+    ret = fn(device, byref(virtType), byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+@convertStrBytes
+def mtmlDeviceInitVirtDevice(device, uuid):
+    c_uuid = c_char_p(uuid)
+    c_virtDev = c_mtmlDevice_t()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceInitVirtDevice")
+    ret = fn(device, c_uuid, byref(c_virtDev))
+    _mtmlCheckReturn(ret)
+    return c_virtDev
+
+def mtmlDeviceFreeVirtDevice(virtDev):
+    fn = _mtmlGetFunctionPointer("mtmlDeviceFreeVirtDevice")
+    ret = fn(virtDev)
+    _mtmlCheckReturn(ret)
+    return None
+
+def mtmlDeviceGetVirtType(virtDev):
+    c_type = c_mtmlVirtType_t()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetVirtType")
+    ret = fn(virtDev, byref(c_type))
+    _mtmlCheckReturn(ret)
+    return c_type
+
+@convertStrBytes
+def mtmlDeviceGetPhyDeviceUuid(virtDev):
+    c_uuid = create_string_buffer(MTML_DEVICE_UUID_BUFFER_SIZE)
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetPhyDeviceUuid")
+    ret = fn(virtDev, c_uuid, c_uint(MTML_DEVICE_UUID_BUFFER_SIZE))
+    _mtmlCheckReturn(ret)
+    return c_uuid.value
+
+## Topology APIs
+def mtmlDeviceGetTopologyLevel(dev1, dev2):
+    c_level = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetTopologyLevel")
+    ret = fn(dev1, dev2, byref(c_level))
+    _mtmlCheckReturn(ret)
+    return c_level.value
+
+def mtmlDeviceCountDeviceByTopologyLevel(device, level):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountDeviceByTopologyLevel")
+    ret = fn(device, c_uint(level), byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+def mtmlDeviceGetDeviceByTopologyLevel(device, level, count):
+    c_devices = (c_mtmlDevice_t * count)()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetDeviceByTopologyLevel")
+    ret = fn(device, c_uint(level), c_uint(count), c_devices)
+    _mtmlCheckReturn(ret)
+    return list(c_devices)
+
+def mtmlDeviceGetP2PStatus(dev1, dev2, p2pCap):
+    c_status = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetP2PStatus")
+    ret = fn(dev1, dev2, c_uint(p2pCap), byref(c_status))
+    _mtmlCheckReturn(ret)
+    return c_status.value
+
+## GPU engine utilization API
+def mtmlGpuGetEngineUtilization(gpu, engine):
+    c_util = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlGpuGetEngineUtilization")
+    ret = fn(gpu, c_uint(engine), byref(c_util))
+    _mtmlCheckReturn(ret)
+    return c_util.value
+
+## Memory APIs
+def mtmlMemoryGetUsedSystem(memory):
+    c_used = c_ulonglong()
+    fn = _mtmlGetFunctionPointer("mtmlMemoryGetUsedSystem")
+    ret = fn(memory, byref(c_used))
+    _mtmlCheckReturn(ret)
+    return c_used.value
+
+def mtmlMemoryGetBusWidth(memory):
+    c_width = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlMemoryGetBusWidth")
+    ret = fn(memory, byref(c_width))
+    _mtmlCheckReturn(ret)
+    return c_width.value
+
+def mtmlMemoryGetBandwidth(memory):
+    c_bandwidth = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlMemoryGetBandwidth")
+    ret = fn(memory, byref(c_bandwidth))
+    _mtmlCheckReturn(ret)
+    return c_bandwidth.value
+
+def mtmlMemoryGetSpeed(memory):
+    c_speed = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlMemoryGetSpeed")
+    ret = fn(memory, byref(c_speed))
+    _mtmlCheckReturn(ret)
+    return c_speed.value
+
+@convertStrBytes
+def mtmlMemoryGetVendor(memory):
+    c_vendor = create_string_buffer(MTML_MEMORY_VENDOR_BUFFER_SIZE)
+    fn = _mtmlGetFunctionPointer("mtmlMemoryGetVendor")
+    ret = fn(memory, c_uint(MTML_MEMORY_VENDOR_BUFFER_SIZE), c_vendor)
+    _mtmlCheckReturn(ret)
+    return c_vendor.value
+
+def mtmlMemoryGetType(memory):
+    c_type = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlMemoryGetType")
+    ret = fn(memory, byref(c_type))
+    _mtmlCheckReturn(ret)
+    return c_type.value
+
+## VPU APIs
+def mtmlVpuGetUtilization(vpu):
+    c_util = c_mtmlCodecUtil_t()
+    fn = _mtmlGetFunctionPointer("mtmlVpuGetUtilization")
+    ret = fn(vpu, byref(c_util))
+    _mtmlCheckReturn(ret)
+    return c_util
+
+def mtmlVpuGetCodecCapacity(vpu):
+    c_encCap = c_uint()
+    c_decCap = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlVpuGetCodecCapacity")
+    ret = fn(vpu, byref(c_encCap), byref(c_decCap))
+    _mtmlCheckReturn(ret)
+    return (c_encCap.value, c_decCap.value)
+
+def mtmlVpuGetEncoderSessionStates(vpu, length):
+    c_states = (c_mtmlCodecSessionState_t * length)()
+    fn = _mtmlGetFunctionPointer("mtmlVpuGetEncoderSessionStates")
+    ret = fn(vpu, c_states, c_uint(length))
+    _mtmlCheckReturn(ret)
+    return list(c_states)
+
+def mtmlVpuGetEncoderSessionMetrics(vpu, sessionId):
+    c_metrics = c_mtmlCodecSessionMetrics_t()
+    fn = _mtmlGetFunctionPointer("mtmlVpuGetEncoderSessionMetrics")
+    ret = fn(vpu, c_uint(sessionId), byref(c_metrics))
+    _mtmlCheckReturn(ret)
+    return c_metrics
+
+def mtmlVpuGetDecoderSessionStates(vpu, length):
+    c_states = (c_mtmlCodecSessionState_t * length)()
+    fn = _mtmlGetFunctionPointer("mtmlVpuGetDecoderSessionStates")
+    ret = fn(vpu, c_states, c_uint(length))
+    _mtmlCheckReturn(ret)
+    return list(c_states)
+
+def mtmlVpuGetDecoderSessionMetrics(vpu, sessionId):
+    c_metrics = c_mtmlCodecSessionMetrics_t()
+    fn = _mtmlGetFunctionPointer("mtmlVpuGetDecoderSessionMetrics")
+    ret = fn(vpu, c_uint(sessionId), byref(c_metrics))
+    _mtmlCheckReturn(ret)
+    return c_metrics
+
+## Log configuration APIs
+def mtmlLogSetConfiguration(configuration):
+    fn = _mtmlGetFunctionPointer("mtmlLogSetConfiguration")
+    ret = fn(byref(configuration))
+    _mtmlCheckReturn(ret)
+    return None
+
+def mtmlLogGetConfiguration():
+    c_config = c_mtmlLogConfiguration_t()
+    fn = _mtmlGetFunctionPointer("mtmlLogGetConfiguration")
+    ret = fn(byref(c_config))
+    _mtmlCheckReturn(ret)
+    return c_config
+
+## MPC APIs
+def mtmlDeviceSetMpcMode(device, mode):
+    fn = _mtmlGetFunctionPointer("mtmlDeviceSetMpcMode")
+    ret = fn(device, c_uint(mode))
+    _mtmlCheckReturn(ret)
+    return None
+
+def mtmlDeviceGetMpcMode(device):
+    c_mode = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMpcMode")
+    ret = fn(device, byref(c_mode))
+    _mtmlCheckReturn(ret)
+    return c_mode.value
+
+def mtmlDeviceCountSupportedMpcProfiles(device):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountSupportedMpcProfiles")
+    ret = fn(device, byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+def mtmlDeviceGetSupportedMpcProfiles(device, count):
+    c_profiles = (c_mtmlMpcProfile_t * count)()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetSupportedMpcProfiles")
+    ret = fn(device, c_uint(count), c_profiles)
+    _mtmlCheckReturn(ret)
+    return list(c_profiles)
+
+def mtmlDeviceCountSupportedMpcConfigurations(device):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountSupportedMpcConfigurations")
+    ret = fn(device, byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+def mtmlDeviceGetSupportedMpcConfigurations(device, count):
+    c_configs = (c_mtmlMpcConfiguration_t * count)()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetSupportedMpcConfigurations")
+    ret = fn(device, c_uint(count), c_configs)
+    _mtmlCheckReturn(ret)
+    return list(c_configs)
+
+def mtmlDeviceGetMpcConfiguration(device):
+    c_config = c_mtmlMpcConfiguration_t()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMpcConfiguration")
+    ret = fn(device, byref(c_config))
+    _mtmlCheckReturn(ret)
+    return c_config
+
+@convertStrBytes
+def mtmlDeviceGetMpcConfigurationByName(device, configName):
+    c_configName = c_char_p(configName)
+    c_config = c_mtmlMpcConfiguration_t()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMpcConfigurationByName")
+    ret = fn(device, c_configName, byref(c_config))
+    _mtmlCheckReturn(ret)
+    return c_config
+
+def mtmlDeviceSetMpcConfiguration(device, configId):
+    fn = _mtmlGetFunctionPointer("mtmlDeviceSetMpcConfiguration")
+    ret = fn(device, c_uint(configId))
+    _mtmlCheckReturn(ret)
+    return None
+
+def mtmlDeviceCountMpcInstancesByProfileId(device, profileId):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountMpcInstancesByProfileId")
+    ret = fn(device, c_uint(profileId), byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+def mtmlDeviceGetMpcInstancesByProfileId(device, profileId, count):
+    c_instances = (c_mtmlDevice_t * count)()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMpcInstancesByProfileId")
+    ret = fn(device, c_uint(profileId), c_uint(count), c_instances)
+    _mtmlCheckReturn(ret)
+    return list(c_instances)
+
+def mtmlDeviceCountMpcInstances(device):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountMpcInstances")
+    ret = fn(device, byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+def mtmlDeviceGetMpcInstances(device, count):
+    c_instances = (c_mtmlDevice_t * count)()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMpcInstances")
+    ret = fn(device, c_uint(count), c_instances)
+    _mtmlCheckReturn(ret)
+    return list(c_instances)
+
+def mtmlDeviceGetMpcInstanceByIndex(device, index):
+    c_instance = c_mtmlDevice_t()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMpcInstanceByIndex")
+    ret = fn(device, c_uint(index), byref(c_instance))
+    _mtmlCheckReturn(ret)
+    return c_instance
+
+def mtmlDeviceGetMpcParentDevice(mpcInstance):
+    c_parent = c_mtmlDevice_t()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMpcParentDevice")
+    ret = fn(mpcInstance, byref(c_parent))
+    _mtmlCheckReturn(ret)
+    return c_parent
+
+def mtmlDeviceGetMpcProfileInfo(mpcInstance):
+    c_profile = c_mtmlMpcProfile_t()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMpcProfileInfo")
+    ret = fn(mpcInstance, byref(c_profile))
+    _mtmlCheckReturn(ret)
+    return c_profile
+
+def mtmlDeviceGetMpcInstanceIndex(mpcInstance):
+    c_index = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMpcInstanceIndex")
+    ret = fn(mpcInstance, byref(c_index))
+    _mtmlCheckReturn(ret)
+    return c_index.value
+
+## MtLink additional APIs
+def mtmlDeviceGetMtLinkCapStatus(device, linkId, capability):
+    c_status = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMtLinkCapStatus")
+    ret = fn(device, c_uint(linkId), c_uint(capability), byref(c_status))
+    _mtmlCheckReturn(ret)
+    return c_status.value
+
+def mtmlDeviceCountMtLinkShortestPaths(localDevice, remoteDevice):
+    c_pathCount = c_uint()
+    c_pathLength = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountMtLinkShortestPaths")
+    ret = fn(localDevice, remoteDevice, byref(c_pathCount), byref(c_pathLength))
+    _mtmlCheckReturn(ret)
+    return (c_pathCount.value, c_pathLength.value)
+
+def mtmlDeviceGetMtLinkShortestPaths(localDevice, remoteDevice, pathCount, pathLength):
+    c_paths = (c_mtmlDevice_t * (pathCount * pathLength))()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMtLinkShortestPaths")
+    ret = fn(localDevice, remoteDevice, c_uint(pathCount), c_uint(pathLength), c_paths)
+    _mtmlCheckReturn(ret)
+    # Return as 2D list
+    paths = []
+    for i in range(pathCount):
+        path = [c_paths[i * pathLength + j] for j in range(pathLength)]
+        paths.append(path)
+    return paths
+
+def mtmlDeviceCountMtLinkLayouts(localDevice, remoteDevice):
+    c_count = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceCountMtLinkLayouts")
+    ret = fn(localDevice, remoteDevice, byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+def mtmlDeviceGetMtLinkLayouts(localDevice, remoteDevice, linkCount):
+    c_layouts = (c_mtmlMtLinkLayout_t * linkCount)()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMtLinkLayouts")
+    ret = fn(localDevice, remoteDevice, c_uint(linkCount), c_layouts)
+    _mtmlCheckReturn(ret)
+    return list(c_layouts)
+
+## Affinity APIs
+def mtmlDeviceGetMemoryAffinityWithinNode(device, nodeSetSize):
+    c_nodeSet = (c_ulong * nodeSetSize)()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetMemoryAffinityWithinNode")
+    ret = fn(device, c_uint(nodeSetSize), c_nodeSet)
+    _mtmlCheckReturn(ret)
+    return list(c_nodeSet)
+
+def mtmlDeviceGetCpuAffinityWithinNode(device, cpuSetSize):
+    c_cpuSet = (c_ulong * cpuSetSize)()
+    fn = _mtmlGetFunctionPointer("mtmlDeviceGetCpuAffinityWithinNode")
+    ret = fn(device, c_uint(cpuSetSize), c_cpuSet)
+    _mtmlCheckReturn(ret)
+    return list(c_cpuSet)
+
+## Device reset API
+def mtmlDeviceReset(device):
+    fn = _mtmlGetFunctionPointer("mtmlDeviceReset")
+    ret = fn(device)
+    _mtmlCheckReturn(ret)
+    return None
+
+## ECC APIs
+def mtmlMemoryGetEccMode(memory):
+    c_currentMode = c_uint()
+    c_pendingMode = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlMemoryGetEccMode")
+    ret = fn(memory, byref(c_currentMode), byref(c_pendingMode))
+    _mtmlCheckReturn(ret)
+    return (c_currentMode.value, c_pendingMode.value)
+
+def mtmlMemoryGetRetiredPagesCount(memory):
+    c_count = c_mtmlPageRetirementCount_t()
+    fn = _mtmlGetFunctionPointer("mtmlMemoryGetRetiredPagesCount")
+    ret = fn(memory, byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count
+
+def mtmlMemoryGetRetiredPages(memory, cause, count):
+    c_pages = (c_mtmlPageRetirement_t * count)()
+    fn = _mtmlGetFunctionPointer("mtmlMemoryGetRetiredPages")
+    ret = fn(memory, c_uint(cause), c_uint(count), c_pages)
+    _mtmlCheckReturn(ret)
+    return list(c_pages)
+
+def mtmlMemoryGetRetiredPagesPendingStatus(memory):
+    c_pending = c_uint()
+    fn = _mtmlGetFunctionPointer("mtmlMemoryGetRetiredPagesPendingStatus")
+    ret = fn(memory, byref(c_pending))
+    _mtmlCheckReturn(ret)
+    return c_pending.value
+
+def mtmlMemoryGetEccErrorCounter(memory, errorType, counterType, locationType):
+    c_count = c_ulonglong()
+    fn = _mtmlGetFunctionPointer("mtmlMemoryGetEccErrorCounter")
+    ret = fn(memory, c_uint(errorType), c_uint(counterType), c_uint(locationType), byref(c_count))
+    _mtmlCheckReturn(ret)
+    return c_count.value
+
+def mtmlMemoryClearEccErrorCounts(memory, counterType):
+    fn = _mtmlGetFunctionPointer("mtmlMemoryClearEccErrorCounts")
+    ret = fn(memory, c_uint(counterType))
+    _mtmlCheckReturn(ret)
+    return None
+
+def mtmlLibrarySetMpcConfigurationInBatch(devices, mpcConfigIds):
+    count = len(devices)
+    c_devices = (c_mtmlDevice_t * count)(*devices)
+    c_configIds = (c_uint * count)(*mpcConfigIds)
+    fn = _mtmlGetFunctionPointer("mtmlLibrarySetMpcConfigurationInBatch")
+    global libHandle
+    ret = fn(libHandle, c_uint(count), c_devices, c_configIds)
+    _mtmlCheckReturn(ret)
+    return None
+
 # nvml wrapper layer ###########################################################
 # NVML constants and types###########################################
 NVML_SUCCESS = MTML_SUCCESS
@@ -717,6 +1600,36 @@ NVML_FI_DEV_NVLINK_THROUGHPUT_DATA_RX = 139 # NVLink RX Data throughput in KiB
 NVML_FI_DEV_NVLINK_THROUGHPUT_RAW_TX  = 140 # NVLink TX Data + protocol overhead in KiB
 NVML_FI_DEV_NVLINK_THROUGHPUT_RAW_RX  = 141 # NVLink RX Data + protocol overhead in KiB
 
+# P2P Capability Index (maps to MtLink for MTML)
+_nvmlGpuP2PCapsIndex_t = c_uint
+NVML_P2P_CAPS_INDEX_READ = 0
+NVML_P2P_CAPS_INDEX_WRITE = 1
+NVML_P2P_CAPS_INDEX_NVLINK = 2  # Maps to MtLink for MTML
+NVML_P2P_CAPS_INDEX_ATOMICS = 3
+NVML_P2P_CAPS_INDEX_PROP = 4
+NVML_P2P_CAPS_INDEX_PCI = 4
+NVML_P2P_CAPS_INDEX_UNKNOWN = 5
+
+# P2P Status
+_nvmlGpuP2PStatus_t = c_uint
+NVML_P2P_STATUS_OK = 0
+NVML_P2P_STATUS_CHIPSET_NOT_SUPPORED = 1
+NVML_P2P_STATUS_CHIPSET_NOT_SUPPORTED = NVML_P2P_STATUS_CHIPSET_NOT_SUPPORED
+NVML_P2P_STATUS_GPU_NOT_SUPPORTED = 2
+NVML_P2P_STATUS_IOH_TOPOLOGY_NOT_SUPPORTED = 3
+NVML_P2P_STATUS_DISABLED_BY_REGKEY = 4
+NVML_P2P_STATUS_NOT_SUPPORTED = 5
+NVML_P2P_STATUS_UNKNOWN = 6
+
+# GPU Topology Level
+_nvmlGpuTopologyLevel_t = c_uint
+NVML_TOPOLOGY_INTERNAL = 0
+NVML_TOPOLOGY_SINGLE = 10
+NVML_TOPOLOGY_MULTIPLE = 20
+NVML_TOPOLOGY_HOSTBRIDGE = 30
+NVML_TOPOLOGY_NODE = 40  # NVML calls this NODE
+NVML_TOPOLOGY_SYSTEM = 50
+
 _nvmlValueType_t = c_uint
 NVML_VALUE_TYPE_DOUBLE = 0
 NVML_VALUE_TYPE_UNSIGNED_INT = 1
@@ -756,7 +1669,7 @@ class NVMLError(MTMLError):
 
         if not isinstance(obj, NVMLError):
             obj.__class__ = NVMLError
-        
+
         return obj
 
 def nvmlStructToFriendlyObject(struct):
@@ -786,7 +1699,7 @@ def nvmlDeviceGetCount():
 
 def nvmlDeviceGetHandleByIndex(index):
     return mtmlLibraryInitDeviceByIndex(index)
-    
+
 def nvmlDeviceGetHandleByUuid(uuid):
     return mtmlLibraryInitDeviceByUuid(uuid)
 
@@ -830,7 +1743,7 @@ def nvmlDeviceGetClockInfo(device, type):
     else:
         # SM is not support
         return 0
-    
+
 def nvmlDeviceGetMaxClockInfo(device, type):
     if type == NVML_CLOCK_GRAPHICS:
         # GPU is Not Support
@@ -842,7 +1755,7 @@ def nvmlDeviceGetMaxClockInfo(device, type):
     else:
         # SM is not support
         return 0
-    
+
 def nvmlDeviceGetTemperature(device, type):
     return mtmlGpuGetTemperature(device)
 
@@ -855,21 +1768,36 @@ def nvmlDeviceGetPowerUsage(device):
 #     return _mtmlGetFunctionPointer(name)
 
 def nvmlDeviceGetFanSpeed(device):
-    # Not Support
-    return 0
+    try:
+        return mtmlDeviceGetFanSpeed(device, 0)
+    except MTMLError:
+        return 0
+
+def nvmlDeviceGetFanSpeed_v2(device, fan):
+    try:
+        return mtmlDeviceGetFanSpeed(device, fan)
+    except MTMLError:
+        return 0
 
 def nvmlDeviceGetBAR1MemoryInfo(device):
     # Not Support
     return 'N/A'
 
 def nvmlDeviceGetEncoderUtilization(device):
-    # Not Support
-    # [utilization, samplingPeriodUs]
-    return [0, 0]
+    try:
+        vpu = mtmlDeviceInitVpu(device)
+        util = mtmlVpuGetUtilization(vpu)
+        return [util.encodeUtil, 0]  # samplingPeriodUs not available
+    except MTMLError:
+        return [0, 0]
 
 def nvmlDeviceGetDecoderUtilization(device):
-    # Not Support
-    return [0, 0]
+    try:
+        vpu = mtmlDeviceInitVpu(device)
+        util = mtmlVpuGetUtilization(vpu)
+        return [util.decodeUtil, 0]  # samplingPeriodUs not available
+    except MTMLError:
+        return [0, 0]
 
 def nvmlSystemGetCudaDriverVersion():
     # Not Support
@@ -892,8 +1820,11 @@ def nvmlDeviceGetPerformanceState(device):
     return 'N/A'
 
 def nvmlDeviceGetTotalEccErrors(device, errorType, counterType):
-    # Not Support
-    return 0
+    try:
+        memory = mtmlDeviceInitMemory(device)
+        return mtmlMemoryGetEccErrorCounter(memory, errorType, counterType, MTML_MEMORY_LOCATION_DRAM)
+    except MTMLError:
+        return 0
 
 def nvmlDeviceGetPowerManagementLimit(device):
     # Not Support
@@ -960,3 +1891,216 @@ def nvmlDeviceGetGpuInstanceId(device):
 def nvmlDeviceGetComputeInstanceId(device):
     # Not Support
     return 0
+
+def nvmlDeviceGetP2PStatus(device1, device2, p2pIndex):
+    """
+    Get P2P status between two devices.
+    Maps NVML P2P caps to MTML P2P caps.
+    """
+    try:
+        # Map NVML P2P index to MTML P2P caps
+        if p2pIndex == NVML_P2P_CAPS_INDEX_READ:
+            mtml_cap = MTML_P2P_CAPS_READ
+        elif p2pIndex == NVML_P2P_CAPS_INDEX_WRITE:
+            mtml_cap = MTML_P2P_CAPS_WRITE
+        elif p2pIndex == NVML_P2P_CAPS_INDEX_NVLINK:
+            # For NVLink check, use MtLink status
+            # First check if devices are connected via MtLink
+            try:
+                level = mtmlDeviceGetTopologyLevel(device1, device2)
+                if level == MTML_TOPOLOGY_INTERNAL:
+                    return NVML_P2P_STATUS_OK
+                # Check MtLink connectivity
+                link_count = mtmlDeviceCountMtLinkLayouts(device1, device2)
+                if link_count > 0:
+                    return NVML_P2P_STATUS_OK
+                else:
+                    return NVML_P2P_STATUS_NOT_SUPPORTED
+            except MTMLError:
+                return NVML_P2P_STATUS_NOT_SUPPORTED
+        else:
+            # For other P2P caps, use MTML P2P status
+            mtml_cap = MTML_P2P_CAPS_READ
+
+        status = mtmlDeviceGetP2PStatus(device1, device2, mtml_cap)
+        # Map MTML status to NVML status
+        if status == MTML_P2P_STATUS_OK:
+            return NVML_P2P_STATUS_OK
+        elif status == MTML_P2P_STATUS_CHIPSET_NOT_SUPPORTED:
+            return NVML_P2P_STATUS_CHIPSET_NOT_SUPPORTED
+        elif status == MTML_P2P_STATUS_GPU_NOT_SUPPORTED:
+            return NVML_P2P_STATUS_GPU_NOT_SUPPORTED
+        else:
+            return NVML_P2P_STATUS_UNKNOWN
+    except MTMLError:
+        return NVML_P2P_STATUS_NOT_SUPPORTED
+
+def nvmlDeviceGetTopologyCommonAncestor(device1, device2):
+    """
+    Get the common ancestor topology level between two devices.
+    Maps MTML topology levels to NVML topology levels.
+    """
+    try:
+        level = mtmlDeviceGetTopologyLevel(device1, device2)
+        # Map MTML topology level to NVML topology level
+        if level == MTML_TOPOLOGY_INTERNAL:
+            return NVML_TOPOLOGY_INTERNAL
+        elif level == MTML_TOPOLOGY_SINGLE:
+            return NVML_TOPOLOGY_SINGLE
+        elif level == MTML_TOPOLOGY_MULTIPLE:
+            return NVML_TOPOLOGY_MULTIPLE
+        elif level == MTML_TOPOLOGY_HOSTBRIDGE:
+            return NVML_TOPOLOGY_HOSTBRIDGE
+        elif level == MTML_TOPOLOGY_NODE:
+            return NVML_TOPOLOGY_NODE
+        elif level == MTML_TOPOLOGY_SYSTEM:
+            return NVML_TOPOLOGY_SYSTEM
+        else:
+            return NVML_TOPOLOGY_SYSTEM
+    except MTMLError:
+        return NVML_TOPOLOGY_SYSTEM
+
+def nvmlDeviceGetTopologyNearestGpus(device, level):
+    """
+    Get GPUs at or nearer than the given topology level.
+    """
+    try:
+        # Map NVML level to MTML level
+        if level >= NVML_TOPOLOGY_SYSTEM:
+            mtml_level = MTML_TOPOLOGY_SYSTEM
+        elif level >= NVML_TOPOLOGY_NODE:
+            mtml_level = MTML_TOPOLOGY_NODE
+        elif level >= NVML_TOPOLOGY_HOSTBRIDGE:
+            mtml_level = MTML_TOPOLOGY_HOSTBRIDGE
+        elif level >= NVML_TOPOLOGY_MULTIPLE:
+            mtml_level = MTML_TOPOLOGY_MULTIPLE
+        elif level >= NVML_TOPOLOGY_SINGLE:
+            mtml_level = MTML_TOPOLOGY_SINGLE
+        else:
+            mtml_level = MTML_TOPOLOGY_INTERNAL
+
+        count = mtmlDeviceCountDeviceByTopologyLevel(device, mtml_level)
+        if count > 0:
+            return mtmlDeviceGetDeviceByTopologyLevel(device, mtml_level, count)
+        return []
+    except MTMLError:
+        return []
+
+def nvmlDeviceGetNvLinkState(device, link):
+    """
+    Get NVLink state - maps to MtLink state for MTML.
+    """
+    try:
+        state = mtmlDeviceGetMtLinkState(device, link)
+        return 1 if state else 0
+    except MTMLError:
+        return 0
+
+def nvmlDeviceGetNvLinkCapability(device, link, capability):
+    """
+    Get NVLink capability - maps to MtLink cap status for MTML.
+    """
+    try:
+        return mtmlDeviceGetMtLinkCapStatus(device, link, capability)
+    except MTMLError:
+        return 0
+
+def nvmlDeviceGetNvLinkRemotePciInfo(device, link):
+    """
+    Get NVLink remote PCI info - maps to MtLink for MTML.
+    """
+    try:
+        remote_device = mtmlDeviceGetMtLinkRemoteDevice(device, link)
+        return mtmlDeviceGetPciInfo(remote_device)
+    except MTMLError:
+        return None
+
+def nvmlDeviceGetNumGpuCores(device):
+    """Get number of GPU cores."""
+    try:
+        return mtmlDeviceCountGpuCores(device)
+    except MTMLError:
+        return 0
+
+def nvmlDeviceGetMemoryBusWidth(device):
+    """Get memory bus width in bits."""
+    try:
+        memory = mtmlDeviceInitMemory(device)
+        return mtmlMemoryGetBusWidth(memory)
+    except MTMLError:
+        return 0
+
+def nvmlDeviceGetVbiosVersion(device):
+    """Get VBIOS version."""
+    try:
+        return mtmlDeviceGetVbiosVersion(device)
+    except MTMLError:
+        return ""
+
+def nvmlDeviceGetBrand(device):
+    """Get device brand."""
+    try:
+        return mtmlDeviceGetBrand(device)
+    except MTMLError:
+        return MTML_BRAND_UNKNOWN
+
+def nvmlDeviceGetMinorNumber(device):
+    """Get device minor number (render node number)."""
+    try:
+        # Parse from render path: /dev/dri/renderD128 -> 128
+        render_path = mtmlDeviceGetRenderPath(device)
+        if isinstance(render_path, bytes):
+            render_path = render_path.decode()
+        # Extract number from path like /dev/dri/renderD128
+        import re
+        match = re.search(r'renderD(\d+)', render_path)
+        if match:
+            return int(match.group(1))
+        return 0
+    except (MTMLError, Exception):
+        return 0
+
+def nvmlDeviceGetCpuAffinity(device, cpuSetSize):
+    """Get CPU affinity for device."""
+    try:
+        return mtmlDeviceGetCpuAffinityWithinNode(device, cpuSetSize)
+    except MTMLError:
+        return [0] * cpuSetSize
+
+def nvmlDeviceGetMemoryAffinity(device, nodeSetSize, scope):
+    """Get memory affinity for device."""
+    try:
+        return mtmlDeviceGetMemoryAffinityWithinNode(device, nodeSetSize)
+    except MTMLError:
+        return [0] * nodeSetSize
+
+def nvmlDeviceGetCpuAffinityWithinScope(device, cpuSetSize, scope):
+    """Get CPU affinity within scope for device."""
+    try:
+        return mtmlDeviceGetCpuAffinityWithinNode(device, cpuSetSize)
+    except MTMLError:
+        return [0] * cpuSetSize
+
+def nvmlDeviceGetEccMode(device):
+    """Get ECC mode - returns (current, pending)."""
+    try:
+        memory = mtmlDeviceInitMemory(device)
+        return mtmlMemoryGetEccMode(memory)
+    except MTMLError:
+        return (0, 0)
+
+def nvmlDeviceGetCurrentEccMode(device):
+    """Get current ECC mode."""
+    return nvmlDeviceGetEccMode(device)[0]
+
+def nvmlDeviceGetPendingEccMode(device):
+    """Get pending ECC mode."""
+    return nvmlDeviceGetEccMode(device)[1]
+
+def nvmlDeviceGetRetiredPagesPendingStatus(device):
+    """Get retired pages pending status."""
+    try:
+        memory = mtmlDeviceInitMemory(device)
+        return mtmlMemoryGetRetiredPagesPendingStatus(memory)
+    except MTMLError:
+        return 0
