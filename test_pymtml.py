@@ -6,6 +6,7 @@ Run with: python test_pymtml.py
 
 import sys
 import traceback
+
 from pymtml import *
 
 
@@ -84,7 +85,9 @@ class MtmlTestSuite:
             fan_count = mtmlDeviceCountFan(device)
             print_result("Fan Count", fan_count)
             for i in range(fan_count):
-                test_error(f"Fan {i} Speed (%)", lambda i=i: mtmlDeviceGetFanSpeed(device, i))
+                test_error(
+                    f"Fan {i} Speed (%)", lambda i=i: mtmlDeviceGetFanSpeed(device, i)
+                )
                 test_error(f"Fan {i} RPM", lambda i=i: mtmlDeviceGetFanRpm(device, i))
         except MTMLError as e:
             print_result("Fan APIs", f"[MTMLError: {e}]")
@@ -96,7 +99,10 @@ class MtmlTestSuite:
             count = mtmlDeviceCountDisplayInterface(device)
             print_result("Display Interface Count", count)
             for i in range(count):
-                test_error(f"Display {i} Spec", lambda i=i: mtmlDeviceGetDisplayInterfaceSpec(device, i))
+                test_error(
+                    f"Display {i} Spec",
+                    lambda i=i: mtmlDeviceGetDisplayInterfaceSpec(device, i),
+                )
         except MTMLError as e:
             print_result("Display APIs", f"[MTMLError: {e}]")
 
@@ -117,8 +123,10 @@ class MtmlTestSuite:
             # Test engine utilization
             for engine in range(MTML_GPU_ENGINE_MAX):
                 engine_names = ["Geometry", "2D", "3D", "Compute"]
-                test_error(f"{engine_names[engine]} Engine Util (%)",
-                          lambda e=engine: mtmlGpuGetEngineUtilization(gpu, e))
+                test_error(
+                    f"{engine_names[engine]} Engine Util (%)",
+                    lambda e=engine: mtmlGpuGetEngineUtilization(gpu, e),
+                )
 
             mtmlDeviceFreeGpu(gpu)
         except MTMLError as e:
@@ -132,11 +140,15 @@ class MtmlTestSuite:
             test_error("Total Memory (bytes)", lambda: mtmlMemoryGetTotal(memory))
             test_error("Used Memory (bytes)", lambda: mtmlMemoryGetUsed(memory))
             test_error("System Used Memory", lambda: mtmlMemoryGetUsedSystem(memory))
-            test_error("Memory Utilization (%)", lambda: mtmlMemoryGetUtilization(device))
+            test_error(
+                "Memory Utilization (%)", lambda: mtmlMemoryGetUtilization(device)
+            )
             test_error("Memory Clock (MHz)", lambda: mtmlMemoryGetClock(device))
             test_error("Memory Max Clock (MHz)", lambda: mtmlMemoryGetMaxClock(device))
             test_error("Memory Bus Width (bits)", lambda: mtmlMemoryGetBusWidth(memory))
-            test_error("Memory Bandwidth (GB/s)", lambda: mtmlMemoryGetBandwidth(memory))
+            test_error(
+                "Memory Bandwidth (GB/s)", lambda: mtmlMemoryGetBandwidth(memory)
+            )
             test_error("Memory Speed (Mbps)", lambda: mtmlMemoryGetSpeed(memory))
             test_error("Memory Vendor", lambda: mtmlMemoryGetVendor(memory))
             test_error("Memory Type", lambda: mtmlMemoryGetType(memory))
@@ -165,8 +177,13 @@ class MtmlTestSuite:
         try:
             spec = mtmlDeviceGetMtLinkSpec(device)
             for i in range(spec.linkNum):
-                test_error(f"Link {i} State", lambda i=i: mtmlDeviceGetMtLinkState(device, i))
-                test_error(f"Link {i} Remote Device", lambda i=i: mtmlDeviceGetMtLinkRemoteDevice(device, i))
+                test_error(
+                    f"Link {i} State", lambda i=i: mtmlDeviceGetMtLinkState(device, i)
+                )
+                test_error(
+                    f"Link {i} Remote Device",
+                    lambda i=i: mtmlDeviceGetMtLinkRemoteDevice(device, i),
+                )
         except MTMLError as e:
             print_result("MtLink APIs", f"[MTMLError: {e}]")
 
@@ -176,14 +193,31 @@ class MtmlTestSuite:
         try:
             memory = mtmlDeviceInitMemory(device)
             test_error("ECC Mode", lambda: mtmlMemoryGetEccMode(memory))
-            test_error("Retired Pages Count", lambda: mtmlMemoryGetRetiredPagesCount(memory))
-            test_error("Retired Pages Pending", lambda: mtmlMemoryGetRetiredPagesPendingStatus(memory))
-            test_error("ECC Corrected Errors",
-                      lambda: mtmlMemoryGetEccErrorCounter(memory, MTML_MEMORY_ERROR_TYPE_CORRECTED,
-                                                           MTML_VOLATILE_ECC, MTML_MEMORY_LOCATION_DRAM))
-            test_error("ECC Uncorrected Errors",
-                      lambda: mtmlMemoryGetEccErrorCounter(memory, MTML_MEMORY_ERROR_TYPE_UNCORRECTED,
-                                                           MTML_VOLATILE_ECC, MTML_MEMORY_LOCATION_DRAM))
+            test_error(
+                "Retired Pages Count", lambda: mtmlMemoryGetRetiredPagesCount(memory)
+            )
+            test_error(
+                "Retired Pages Pending",
+                lambda: mtmlMemoryGetRetiredPagesPendingStatus(memory),
+            )
+            test_error(
+                "ECC Corrected Errors",
+                lambda: mtmlMemoryGetEccErrorCounter(
+                    memory,
+                    MTML_MEMORY_ERROR_TYPE_CORRECTED,
+                    MTML_VOLATILE_ECC,
+                    MTML_MEMORY_LOCATION_DRAM,
+                ),
+            )
+            test_error(
+                "ECC Uncorrected Errors",
+                lambda: mtmlMemoryGetEccErrorCounter(
+                    memory,
+                    MTML_MEMORY_ERROR_TYPE_UNCORRECTED,
+                    MTML_VOLATILE_ECC,
+                    MTML_MEMORY_LOCATION_DRAM,
+                ),
+            )
             mtmlDeviceFreeMemory(memory)
         except MTMLError as e:
             print_result("ECC APIs", f"[MTMLError: {e}]")
@@ -192,17 +226,33 @@ class MtmlTestSuite:
         print_section(f"Device {device_idx} - MPC APIs")
 
         test_error("MPC Mode", lambda: mtmlDeviceGetMpcMode(device))
-        test_error("Supported MPC Profiles Count", lambda: mtmlDeviceCountSupportedMpcProfiles(device))
-        test_error("Supported MPC Configurations Count", lambda: mtmlDeviceCountSupportedMpcConfigurations(device))
+        test_error(
+            "Supported MPC Profiles Count",
+            lambda: mtmlDeviceCountSupportedMpcProfiles(device),
+        )
+        test_error(
+            "Supported MPC Configurations Count",
+            lambda: mtmlDeviceCountSupportedMpcConfigurations(device),
+        )
         test_error("MPC Instances Count", lambda: mtmlDeviceCountMpcInstances(device))
-        test_error("Current MPC Configuration", lambda: mtmlDeviceGetMpcConfiguration(device))
+        test_error(
+            "Current MPC Configuration", lambda: mtmlDeviceGetMpcConfiguration(device)
+        )
 
     def test_virtualization_apis(self, device, device_idx):
         print_section(f"Device {device_idx} - Virtualization APIs")
 
-        test_error("Supported Virt Types Count", lambda: mtmlDeviceCountSupportedVirtTypes(device))
-        test_error("Available Virt Types Count", lambda: mtmlDeviceCountAvailVirtTypes(device))
-        test_error("Active Virt Devices Count", lambda: mtmlDeviceCountActiveVirtDevices(device))
+        test_error(
+            "Supported Virt Types Count",
+            lambda: mtmlDeviceCountSupportedVirtTypes(device),
+        )
+        test_error(
+            "Available Virt Types Count", lambda: mtmlDeviceCountAvailVirtTypes(device)
+        )
+        test_error(
+            "Active Virt Devices Count",
+            lambda: mtmlDeviceCountActiveVirtDevices(device),
+        )
 
     def test_topology_apis(self, devices):
         if len(devices) < 2:
@@ -211,9 +261,18 @@ class MtmlTestSuite:
 
         print_section("Topology APIs")
         dev1, dev2 = devices[0], devices[1]
-        test_error("Topology Level (dev0, dev1)", lambda: mtmlDeviceGetTopologyLevel(dev1, dev2))
-        test_error("P2P Status Read", lambda: mtmlDeviceGetP2PStatus(dev1, dev2, MTML_P2P_CAPS_READ))
-        test_error("P2P Status Write", lambda: mtmlDeviceGetP2PStatus(dev1, dev2, MTML_P2P_CAPS_WRITE))
+        test_error(
+            "Topology Level (dev0, dev1)",
+            lambda: mtmlDeviceGetTopologyLevel(dev1, dev2),
+        )
+        test_error(
+            "P2P Status Read",
+            lambda: mtmlDeviceGetP2PStatus(dev1, dev2, MTML_P2P_CAPS_READ),
+        )
+        test_error(
+            "P2P Status Write",
+            lambda: mtmlDeviceGetP2PStatus(dev1, dev2, MTML_P2P_CAPS_WRITE),
+        )
 
     def test_nvml_wrapper_apis(self, device, device_idx):
         print_section(f"Device {device_idx} - NVML Wrapper APIs")
@@ -224,22 +283,47 @@ class MtmlTestSuite:
         test_error("nvmlDeviceGetPciInfo", lambda: nvmlDeviceGetPciInfo(device))
         test_error("nvmlDeviceGetSerial", lambda: nvmlDeviceGetSerial(device))
         test_error("nvmlDeviceGetMemoryInfo", lambda: nvmlDeviceGetMemoryInfo(device))
-        test_error("nvmlDeviceGetUtilizationRates", lambda: nvmlDeviceGetUtilizationRates(device))
-        test_error("nvmlDeviceGetTemperature", lambda: nvmlDeviceGetTemperature(device, NVML_TEMPERATURE_GPU))
+        test_error(
+            "nvmlDeviceGetUtilizationRates",
+            lambda: nvmlDeviceGetUtilizationRates(device),
+        )
+        test_error(
+            "nvmlDeviceGetTemperature",
+            lambda: nvmlDeviceGetTemperature(device, NVML_TEMPERATURE_GPU),
+        )
         test_error("nvmlDeviceGetPowerUsage", lambda: nvmlDeviceGetPowerUsage(device))
         test_error("nvmlDeviceGetFanSpeed", lambda: nvmlDeviceGetFanSpeed(device))
-        test_error("nvmlDeviceGetClockInfo (Graphics)", lambda: nvmlDeviceGetClockInfo(device, NVML_CLOCK_GRAPHICS))
-        test_error("nvmlDeviceGetClockInfo (Memory)", lambda: nvmlDeviceGetClockInfo(device, NVML_CLOCK_MEM))
-        test_error("nvmlDeviceGetClockInfo (Video)", lambda: nvmlDeviceGetClockInfo(device, NVML_CLOCK_VIDEO))
-        test_error("nvmlDeviceGetEncoderUtilization", lambda: nvmlDeviceGetEncoderUtilization(device))
-        test_error("nvmlDeviceGetDecoderUtilization", lambda: nvmlDeviceGetDecoderUtilization(device))
-        test_error("nvmlDeviceGetTotalEccErrors",
-                  lambda: nvmlDeviceGetTotalEccErrors(device, NVML_MEMORY_ERROR_TYPE_CORRECTED, NVML_VOLATILE_ECC))
+        test_error(
+            "nvmlDeviceGetClockInfo (Graphics)",
+            lambda: nvmlDeviceGetClockInfo(device, NVML_CLOCK_GRAPHICS),
+        )
+        test_error(
+            "nvmlDeviceGetClockInfo (Memory)",
+            lambda: nvmlDeviceGetClockInfo(device, NVML_CLOCK_MEM),
+        )
+        test_error(
+            "nvmlDeviceGetClockInfo (Video)",
+            lambda: nvmlDeviceGetClockInfo(device, NVML_CLOCK_VIDEO),
+        )
+        test_error(
+            "nvmlDeviceGetEncoderUtilization",
+            lambda: nvmlDeviceGetEncoderUtilization(device),
+        )
+        test_error(
+            "nvmlDeviceGetDecoderUtilization",
+            lambda: nvmlDeviceGetDecoderUtilization(device),
+        )
+        test_error(
+            "nvmlDeviceGetTotalEccErrors",
+            lambda: nvmlDeviceGetTotalEccErrors(
+                device, NVML_MEMORY_ERROR_TYPE_CORRECTED, NVML_VOLATILE_ECC
+            ),
+        )
 
     def run_all_tests(self):
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print(" MTML Python Bindings Test Suite")
-        print("="*60)
+        print("=" * 60)
 
         # Test library APIs
         self.test_library_apis()
@@ -307,4 +391,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-

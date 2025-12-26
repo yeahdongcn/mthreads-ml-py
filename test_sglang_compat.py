@@ -10,6 +10,7 @@ Run with: python test_sglang_compat.py
 
 import sys
 import traceback
+
 import pymtml as pynvml
 
 
@@ -30,20 +31,28 @@ def test_p2p_constants():
 
     # P2P Caps Index
     assert pynvml.NVML_P2P_CAPS_INDEX_READ == 0, "NVML_P2P_CAPS_INDEX_READ should be 0"
-    assert pynvml.NVML_P2P_CAPS_INDEX_WRITE == 1, "NVML_P2P_CAPS_INDEX_WRITE should be 1"
-    assert pynvml.NVML_P2P_CAPS_INDEX_NVLINK == 2, "NVML_P2P_CAPS_INDEX_NVLINK should be 2"
+    assert (
+        pynvml.NVML_P2P_CAPS_INDEX_WRITE == 1
+    ), "NVML_P2P_CAPS_INDEX_WRITE should be 1"
+    assert (
+        pynvml.NVML_P2P_CAPS_INDEX_NVLINK == 2
+    ), "NVML_P2P_CAPS_INDEX_NVLINK should be 2"
     print_result("P2P Caps Index Constants", "OK")
 
     # P2P Status
     assert pynvml.NVML_P2P_STATUS_OK == 0, "NVML_P2P_STATUS_OK should be 0"
-    assert pynvml.NVML_P2P_STATUS_NOT_SUPPORTED == 5, "NVML_P2P_STATUS_NOT_SUPPORTED should be 5"
+    assert (
+        pynvml.NVML_P2P_STATUS_NOT_SUPPORTED == 5
+    ), "NVML_P2P_STATUS_NOT_SUPPORTED should be 5"
     print_result("P2P Status Constants", "OK")
 
     # Topology levels
     assert pynvml.NVML_TOPOLOGY_INTERNAL == 0, "NVML_TOPOLOGY_INTERNAL should be 0"
     assert pynvml.NVML_TOPOLOGY_SINGLE == 10, "NVML_TOPOLOGY_SINGLE should be 10"
     assert pynvml.NVML_TOPOLOGY_MULTIPLE == 20, "NVML_TOPOLOGY_MULTIPLE should be 20"
-    assert pynvml.NVML_TOPOLOGY_HOSTBRIDGE == 30, "NVML_TOPOLOGY_HOSTBRIDGE should be 30"
+    assert (
+        pynvml.NVML_TOPOLOGY_HOSTBRIDGE == 30
+    ), "NVML_TOPOLOGY_HOSTBRIDGE should be 30"
     assert pynvml.NVML_TOPOLOGY_NODE == 40, "NVML_TOPOLOGY_NODE should be 40"
     assert pynvml.NVML_TOPOLOGY_SYSTEM == 50, "NVML_TOPOLOGY_SYSTEM should be 50"
     print_result("Topology Level Constants", "OK")
@@ -60,23 +69,47 @@ def test_p2p_status(devices):
 
     # Test nvmlDeviceGetP2PStatus with various caps
     try:
-        status_read = pynvml.nvmlDeviceGetP2PStatus(dev1, dev2, pynvml.NVML_P2P_CAPS_INDEX_READ)
-        print_result("P2P Read Status (dev0 -> dev1)",
-                     "OK" if status_read == pynvml.NVML_P2P_STATUS_OK else f"Status: {status_read}")
+        status_read = pynvml.nvmlDeviceGetP2PStatus(
+            dev1, dev2, pynvml.NVML_P2P_CAPS_INDEX_READ
+        )
+        print_result(
+            "P2P Read Status (dev0 -> dev1)",
+            (
+                "OK"
+                if status_read == pynvml.NVML_P2P_STATUS_OK
+                else f"Status: {status_read}"
+            ),
+        )
     except Exception as e:
         print_result("P2P Read Status", f"Error: {e}")
 
     try:
-        status_write = pynvml.nvmlDeviceGetP2PStatus(dev1, dev2, pynvml.NVML_P2P_CAPS_INDEX_WRITE)
-        print_result("P2P Write Status (dev0 -> dev1)",
-                     "OK" if status_write == pynvml.NVML_P2P_STATUS_OK else f"Status: {status_write}")
+        status_write = pynvml.nvmlDeviceGetP2PStatus(
+            dev1, dev2, pynvml.NVML_P2P_CAPS_INDEX_WRITE
+        )
+        print_result(
+            "P2P Write Status (dev0 -> dev1)",
+            (
+                "OK"
+                if status_write == pynvml.NVML_P2P_STATUS_OK
+                else f"Status: {status_write}"
+            ),
+        )
     except Exception as e:
         print_result("P2P Write Status", f"Error: {e}")
 
     try:
-        status_nvlink = pynvml.nvmlDeviceGetP2PStatus(dev1, dev2, pynvml.NVML_P2P_CAPS_INDEX_NVLINK)
-        print_result("NVLink/MtLink Status (dev0 -> dev1)",
-                     "OK" if status_nvlink == pynvml.NVML_P2P_STATUS_OK else f"Status: {status_nvlink}")
+        status_nvlink = pynvml.nvmlDeviceGetP2PStatus(
+            dev1, dev2, pynvml.NVML_P2P_CAPS_INDEX_NVLINK
+        )
+        print_result(
+            "NVLink/MtLink Status (dev0 -> dev1)",
+            (
+                "OK"
+                if status_nvlink == pynvml.NVML_P2P_STATUS_OK
+                else f"Status: {status_nvlink}"
+            ),
+        )
     except Exception as e:
         print_result("NVLink/MtLink Status", f"Error: {e}")
 
@@ -99,7 +132,7 @@ def test_topology_detection(devices):
             pynvml.NVML_TOPOLOGY_MULTIPLE: "MULTIPLE",
             pynvml.NVML_TOPOLOGY_HOSTBRIDGE: "HOSTBRIDGE",
             pynvml.NVML_TOPOLOGY_NODE: "NODE",
-            pynvml.NVML_TOPOLOGY_SYSTEM: "SYSTEM"
+            pynvml.NVML_TOPOLOGY_SYSTEM: "SYSTEM",
         }
         level_name = level_names.get(level, f"Unknown({level})")
         print_result("Topology Common Ancestor (dev0, dev1)", level_name)
@@ -108,7 +141,9 @@ def test_topology_detection(devices):
 
     # Test nvmlDeviceGetTopologyNearestGpus
     try:
-        nearest = pynvml.nvmlDeviceGetTopologyNearestGpus(dev1, pynvml.NVML_TOPOLOGY_NODE)
+        nearest = pynvml.nvmlDeviceGetTopologyNearestGpus(
+            dev1, pynvml.NVML_TOPOLOGY_NODE
+        )
         print_result("Nearest GPUs at NODE level", f"{len(nearest)} device(s)")
     except Exception as e:
         print_result("Nearest GPUs", f"Error: {e}")
@@ -122,7 +157,10 @@ def test_nvlink_apis(device, device_idx):
     try:
         # Use MTML API to get link spec (no NVML equivalent)
         spec = pynvml.mtmlDeviceGetMtLinkSpec(device)
-        print_result("MtLink Spec", f"version={spec.version}, bandWidth={spec.bandWidth}, linkNum={spec.linkNum}")
+        print_result(
+            "MtLink Spec",
+            f"version={spec.version}, bandWidth={spec.bandWidth}, linkNum={spec.linkNum}",
+        )
 
         for link in range(spec.linkNum):
             try:
@@ -206,8 +244,10 @@ def test_sglang_nvlink_full_connection(physical_device_ids, logger=None):
                         handle, peer_handle, pynvml.NVML_P2P_CAPS_INDEX_NVLINK
                     )
                     if p2p_status != pynvml.NVML_P2P_STATUS_OK:
-                        print_result(f"Device {physical_device_ids[i]} <-> Device {physical_device_ids[j]}",
-                                     f"NOT connected (status={p2p_status})")
+                        print_result(
+                            f"Device {physical_device_ids[i]} <-> Device {physical_device_ids[j]}",
+                            f"NOT connected (status={p2p_status})",
+                        )
                         return False
                 except pynvml.NVMLError:
                     if logger:
@@ -215,8 +255,10 @@ def test_sglang_nvlink_full_connection(physical_device_ids, logger=None):
                             "NVLink detection failed. This is normal if your"
                             " machine has no NVLink equipped."
                         )
-                    print_result(f"Device {physical_device_ids[i]} <-> Device {physical_device_ids[j]}",
-                                 "NVLink detection failed")
+                    print_result(
+                        f"Device {physical_device_ids[i]} <-> Device {physical_device_ids[j]}",
+                        "NVLink detection failed",
+                    )
                     return False
     # ========================================================================
     # End of sglang code
@@ -227,10 +269,10 @@ def test_sglang_nvlink_full_connection(physical_device_ids, logger=None):
 
 
 def main():
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print(" MTML sglang Compatibility Test Suite")
     print(" (Using pynvml-style API calls)")
-    print("="*60)
+    print("=" * 60)
 
     try:
         # Initialize library using NVML-style API
@@ -293,4 +335,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-
