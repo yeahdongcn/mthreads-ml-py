@@ -1,15 +1,17 @@
 # MTML Python Bindings (pymtml)
 
-Python bindings for the MTThreads Management Library (MTML) - a C-based API for monitoring and managing MTThreads GPU devices.
+Python bindings for the Moore Threads Management Library (MTML) - a C-based API for monitoring and managing Moore Threads GPU devices.
 
 ## Overview
 
 MTML provides programmatic access to GPU metrics and configuration, similar to nvidia-smi for NVIDIA GPUs. This library (`pymtml.py`) wraps the native MTML C library for Python usage.
 
+Moore Threads GPUs use MUSA (Meta-computing Unified System Architecture) as their compute platform, analogous to NVIDIA's CUDA.
+
 ## Requirements
 
 - Python 3.7+
-- MTThreads GPU driver with MTML library installed
+- Moore Threads GPU driver with MTML library installed
 - The `libmtml.so` shared library must be in the library path
 
 ## Installation
@@ -31,19 +33,19 @@ print(f"Found {device_count} GPU(s)")
 # Query each device
 for i in range(device_count):
     device = mtmlLibraryInitDeviceByIndex(i)
-    
+
     # Basic info
     name = mtmlDeviceGetName(device)
     uuid = mtmlDeviceGetUUID(device)
     print(f"Device {i}: {name} ({uuid})")
-    
+
     # Memory info
     memory = mtmlDeviceInitMemory(device)
     total = mtmlMemoryGetTotal(memory)
     used = mtmlMemoryGetUsed(memory)
     print(f"  Memory: {used / 1024**3:.2f} / {total / 1024**3:.2f} GB")
     mtmlDeviceFreeMemory(memory)
-    
+
     # GPU utilization
     util = mtmlGpuGetUtilization(device)
     temp = mtmlGpuGetTemperature(device)

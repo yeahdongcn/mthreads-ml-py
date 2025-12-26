@@ -2034,8 +2034,8 @@ def nvmlDeviceGetComputeMode(device):
 
 def nvmlDeviceGetCudaComputeCapability(device):
     """
-    Get MUSA compute capability for Moore Threads GPU.
-    Returns (major, minor) tuple.
+    Get MUSA (Meta-computing Unified System Architecture) compute capability
+    for Moore Threads GPU. Returns (major, minor) tuple.
 
     Uses torch.musa.get_device_capability via torchada (torch + torch_musa)
     to get the correct MUSA capability.
