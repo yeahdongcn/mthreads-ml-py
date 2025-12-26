@@ -131,7 +131,9 @@ def test_nvlink_apis(device, device_idx):
             except Exception as e:
                 print_result(f"Link {link} State", f"Error: {e}")
     except pynvml.NVMLError as e:
-        print_result("MtLink APIs", f"[NVMLError: {e}]")
+        print_result("MtLink APIs", f"Not available (NVMLError: {e})")
+    except Exception as e:
+        print_result("MtLink APIs", f"Not available (Error: {e})")
 
 
 def test_device_info_apis(device, device_idx):
@@ -174,6 +176,56 @@ def test_ecc_apis(device, device_idx):
         print_result("Retired Pages Pending", f"Error: {e}")
 
 
+def test_sglang_nvlink_full_connection(physical_device_ids, logger=None):
+    """
+    Test the exact sglang NVLink full connection check pattern.
+    This is the NVML code path that sglang uses - we want to verify
+    that using 'import pymtml as pynvml' works with this exact code.
+    """
+    print_section("sglang NVLink Full Connection Check")
+
+    if len(physical_device_ids) < 2:
+        print_result("Test", "Skipped (need 2+ devices)")
+        return True
+
+    print_result("Testing devices", physical_device_ids)
+
+    # ========================================================================
+    # This is the EXACT sglang NVML code - DO NOT MODIFY
+    # Source: sglang's check for fully connected GPUs via NVLink
+    # ========================================================================
+    """
+    query if the set of gpus are fully connected by nvlink (1 hop)
+    """
+    handles = [pynvml.nvmlDeviceGetHandleByIndex(i) for i in physical_device_ids]
+    for i, handle in enumerate(handles):
+        for j, peer_handle in enumerate(handles):
+            if i < j:
+                try:
+                    p2p_status = pynvml.nvmlDeviceGetP2PStatus(
+                        handle, peer_handle, pynvml.NVML_P2P_CAPS_INDEX_NVLINK
+                    )
+                    if p2p_status != pynvml.NVML_P2P_STATUS_OK:
+                        print_result(f"Device {physical_device_ids[i]} <-> Device {physical_device_ids[j]}",
+                                     f"NOT connected (status={p2p_status})")
+                        return False
+                except pynvml.NVMLError:
+                    if logger:
+                        logger.exception(
+                            "NVLink detection failed. This is normal if your"
+                            " machine has no NVLink equipped."
+                        )
+                    print_result(f"Device {physical_device_ids[i]} <-> Device {physical_device_ids[j]}",
+                                 "NVLink detection failed")
+                    return False
+    # ========================================================================
+    # End of sglang code
+    # ========================================================================
+
+    print_result("Full mesh connected", "Yes")
+    return True
+
+
 def main():
     print("\n" + "="*60)
     print(" MTML sglang Compatibility Test Suite")
@@ -208,6 +260,11 @@ def main():
         # Run multi-device tests
         test_p2p_status(devices)
         test_topology_detection(devices)
+
+        # Test sglang's exact NVLink full connection check pattern
+        # This uses the device indices [0, 1, 2, ...] as physical_device_ids
+        physical_device_ids = list(range(device_count))
+        test_sglang_nvlink_full_connection(physical_device_ids)
 
         print_section("Test Complete")
         print("\n  All sglang compatibility tests passed!")

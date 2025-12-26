@@ -1896,6 +1896,9 @@ def nvmlDeviceGetP2PStatus(device1, device2, p2pIndex):
     """
     Get P2P status between two devices.
     Maps NVML P2P caps to MTML P2P caps.
+
+    For NVML_P2P_CAPS_INDEX_NVLINK, this performs detailed MtLink detection
+    to check if two devices are connected via MtLink (1 hop).
     """
     try:
         # Map NVML P2P index to MTML P2P caps
@@ -1905,19 +1908,45 @@ def nvmlDeviceGetP2PStatus(device1, device2, p2pIndex):
             mtml_cap = MTML_P2P_CAPS_WRITE
         elif p2pIndex == NVML_P2P_CAPS_INDEX_NVLINK:
             # For NVLink check, use MtLink status
-            # First check if devices are connected via MtLink
+            # This performs the same MtLink detection logic used in sglang's MUSA branch
+
+            # First check topology - if same device, they're connected
             try:
                 level = mtmlDeviceGetTopologyLevel(device1, device2)
                 if level == MTML_TOPOLOGY_INTERNAL:
                     return NVML_P2P_STATUS_OK
-                # Check MtLink connectivity
+            except MTMLError:
+                pass
+
+            # Check MtLink connectivity by iterating through links
+            # This is the detailed check: for each link on device1, check if
+            # the remote device matches device2's UUID
+            try:
+                peer_uuid = mtmlDeviceGetUUID(device2)
+                link_spec = mtmlDeviceGetMtLinkSpec(device1)
+                for link_idx in range(link_spec.linkNum):
+                    try:
+                        if mtmlDeviceGetMtLinkState(device1, link_idx) != MTML_MTLINK_STATE_UP:
+                            continue
+                        remote_handle = mtmlDeviceGetMtLinkRemoteDevice(device1, link_idx)
+                        if remote_handle:
+                            remote_uuid = mtmlDeviceGetUUID(remote_handle)
+                            if remote_uuid == peer_uuid:
+                                return NVML_P2P_STATUS_OK
+                    except MTMLError:
+                        continue
+            except MTMLError:
+                pass
+
+            # Fallback: try mtmlDeviceCountMtLinkLayouts as a secondary check
+            try:
                 link_count = mtmlDeviceCountMtLinkLayouts(device1, device2)
                 if link_count > 0:
                     return NVML_P2P_STATUS_OK
-                else:
-                    return NVML_P2P_STATUS_NOT_SUPPORTED
             except MTMLError:
-                return NVML_P2P_STATUS_NOT_SUPPORTED
+                pass
+
+            return NVML_P2P_STATUS_NOT_SUPPORTED
         else:
             # For other P2P caps, use MTML P2P status
             mtml_cap = MTML_P2P_CAPS_READ
