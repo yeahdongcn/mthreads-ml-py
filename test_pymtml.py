@@ -360,6 +360,21 @@ class MtmlTestSuite:
         print_section("Test Complete")
 
 
+def test_init_shutdown_cycle():
+    """Test that library can be initialized and shutdown multiple times."""
+    print_section("Init/Shutdown Cycle Test")
+
+    for i in range(3):
+        print(f"  Cycle {i + 1}: Init...")
+        mtmlLibraryInit()
+        count = mtmlLibraryCountDevice()
+        print(f"  Cycle {i + 1}: Device count = {count}")
+        print(f"  Cycle {i + 1}: Shutdown...")
+        mtmlLibraryShutDown()
+
+    print("  Init/Shutdown cycle test: PASSED")
+
+
 def main():
     try:
         # Initialize MTML library
@@ -385,6 +400,14 @@ def main():
             print("\nMTML library shutdown complete.")
         except:
             pass
+
+    # Test init/shutdown cycle (after main tests complete)
+    try:
+        test_init_shutdown_cycle()
+    except Exception as e:
+        print(f"Init/Shutdown cycle test FAILED: {e}")
+        traceback.print_exc()
+        return 1
 
     return 0
 

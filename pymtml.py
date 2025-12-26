@@ -685,14 +685,13 @@ def mtmlLibraryShutDown():
     if libHandle is None:
         return None
 
-    # Save handle and reset global before calling shutdown
-    # to prevent any dangling references during garbage collection
-    handle_to_shutdown = libHandle
-    libHandle = None
-
     fn = _mtmlGetFunctionPointer("mtmlLibraryShutDown")
-    ret = fn(handle_to_shutdown)
+    ret = fn(libHandle)
     _mtmlCheckReturn(ret)
+
+    # Reset libHandle to a fresh instance to allow reinitialization
+    # and prevent dangling references during garbage collection
+    libHandle = c_mtmlLibrary_t()
 
     # Atomically update refcount
     global _mtmlLib_refcount
