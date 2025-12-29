@@ -812,6 +812,10 @@ def mtmlDeviceGetPciInfo(device):
     fn = _mtmlGetFunctionPointer("mtmlDeviceGetPciInfo")
     ret = fn(device, byref(c_pciinfo))
     _mtmlCheckReturn(ret)
+    # If busId is empty or invalid (contains non-printable chars), fill it with sbdf
+    bus_id = c_pciinfo.busId
+    if not bus_id or not bus_id[0].isalnum():
+        c_pciinfo.busId = c_pciinfo.sbdf
     return c_pciinfo
 
 

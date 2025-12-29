@@ -76,6 +76,12 @@ class MtmlTestSuite:
         print_section(f"Device {device_idx} - PCI APIs")
 
         test_error("PCI Info", lambda: mtmlDeviceGetPciInfo(device))
+        # Verify busId is populated (should be filled from sbdf if empty)
+        pci_info = mtmlDeviceGetPciInfo(device)
+        if pci_info.busId and pci_info.busId[0].isalnum():
+            print_result("PCI Info busId populated", pci_info.busId)
+        else:
+            print_result("PCI Info busId populated", "[FAIL: busId is empty or invalid]")
         test_error("PCIe Slot Info", lambda: mtmlDeviceGetPcieSlotInfo(device))
 
     def test_device_fan_apis(self, device, device_idx):
