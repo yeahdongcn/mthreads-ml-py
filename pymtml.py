@@ -1897,27 +1897,24 @@ def nvmlDeviceGetUtilizationRates(device):
 
 
 def nvmlDeviceGetClockInfo(device, type):
-    if type == NVML_CLOCK_GRAPHICS:
+    if type == NVML_CLOCK_GRAPHICS or type == NVML_CLOCK_SM:
         return mtmlGpuGetClock(device)
     elif type == NVML_CLOCK_VIDEO:
         return mtmlVpuGetClock(device)
     elif type == NVML_CLOCK_MEM:
         return mtmlMemoryGetClock(device)
     else:
-        # SM is not support
         return 0
 
 
 def nvmlDeviceGetMaxClockInfo(device, type):
-    if type == NVML_CLOCK_GRAPHICS:
-        # GPU is Not Support
-        return 0
+    if type == NVML_CLOCK_GRAPHICS or type == NVML_CLOCK_SM:
+        return mtmlGpuGetMaxClock(device)
     elif type == NVML_CLOCK_VIDEO:
         return mtmlVpuGetMaxClock(device)
     elif type == NVML_CLOCK_MEM:
         return mtmlMemoryGetMaxClock(device)
     else:
-        # SM is not support
         return 0
 
 
