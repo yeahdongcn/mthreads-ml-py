@@ -140,6 +140,10 @@ class PynvmlTestSuite:
             lambda: pynvml.nvmlDeviceGetClockInfo(device, pynvml.NVML_CLOCK_GRAPHICS),
         )
         test_api(
+            "nvmlDeviceGetClockInfo (SM)",
+            lambda: pynvml.nvmlDeviceGetClockInfo(device, pynvml.NVML_CLOCK_SM),
+        )
+        test_api(
             "nvmlDeviceGetClockInfo (MEM)",
             lambda: pynvml.nvmlDeviceGetClockInfo(device, pynvml.NVML_CLOCK_MEM),
         )
@@ -152,6 +156,10 @@ class PynvmlTestSuite:
             lambda: pynvml.nvmlDeviceGetMaxClockInfo(
                 device, pynvml.NVML_CLOCK_GRAPHICS
             ),
+        )
+        test_api(
+            "nvmlDeviceGetMaxClockInfo (SM)",
+            lambda: pynvml.nvmlDeviceGetMaxClockInfo(device, pynvml.NVML_CLOCK_SM),
         )
         test_api(
             "nvmlDeviceGetMaxClockInfo (MEM)",

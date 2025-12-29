@@ -8,7 +8,7 @@ PACKAGE = pymtml
 
 help:
 	@echo "Available targets:"
-	@echo "  format    - Format code with yapf"
+	@echo "  format    - Format code with isort + black"
 	@echo "  lint      - Run linter (flake8)"
 	@echo "  test      - Run tests"
 	@echo "  build     - Build wheel package"
